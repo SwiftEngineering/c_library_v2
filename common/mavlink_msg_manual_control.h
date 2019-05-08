@@ -11,11 +11,15 @@ typedef struct __mavlink_manual_control_t {
  int16_t r; /*<  R-axis, normalized to the range [-1000,1000]. A value of INT16_MAX indicates that this axis is invalid. Generally corresponds to a twisting of the joystick, with counter-clockwise being 1000 and clockwise being -1000, and the yaw of a vehicle.*/
  uint16_t buttons; /*<  A bitfield corresponding to the joystick buttons' current state, 1 for pressed, 0 for released. The lowest bit corresponds to Button 1.*/
  uint8_t target; /*<  The system to be controlled.*/
+ int16_t chan5; /*<  axis, normalized to the range [-1000,1000]. A value of INT16_MAX indicates that this axis is invalid. Corresponds to movement on joystick channel 5*/
+ int16_t chan6; /*<  axis, normalized to the range [-1000,1000]. A value of INT16_MAX indicates that this axis is invalid. Corresponds to movement on joystick channel 6*/
+ int16_t chan7; /*<  axis, normalized to the range [-1000,1000]. A value of INT16_MAX indicates that this axis is invalid. Corresponds to movement on joystick channel 7*/
+ int16_t chan8; /*<  axis, normalized to the range [-1000,1000]. A value of INT16_MAX indicates that this axis is invalid. Corresponds to movement on joystick channel 8*/
 }) mavlink_manual_control_t;
 
-#define MAVLINK_MSG_ID_MANUAL_CONTROL_LEN 11
+#define MAVLINK_MSG_ID_MANUAL_CONTROL_LEN 19
 #define MAVLINK_MSG_ID_MANUAL_CONTROL_MIN_LEN 11
-#define MAVLINK_MSG_ID_69_LEN 11
+#define MAVLINK_MSG_ID_69_LEN 19
 #define MAVLINK_MSG_ID_69_MIN_LEN 11
 
 #define MAVLINK_MSG_ID_MANUAL_CONTROL_CRC 243
@@ -27,25 +31,33 @@ typedef struct __mavlink_manual_control_t {
 #define MAVLINK_MESSAGE_INFO_MANUAL_CONTROL { \
     69, \
     "MANUAL_CONTROL", \
-    6, \
+    10, \
     {  { "target", NULL, MAVLINK_TYPE_UINT8_T, 0, 10, offsetof(mavlink_manual_control_t, target) }, \
          { "x", NULL, MAVLINK_TYPE_INT16_T, 0, 0, offsetof(mavlink_manual_control_t, x) }, \
          { "y", NULL, MAVLINK_TYPE_INT16_T, 0, 2, offsetof(mavlink_manual_control_t, y) }, \
          { "z", NULL, MAVLINK_TYPE_INT16_T, 0, 4, offsetof(mavlink_manual_control_t, z) }, \
          { "r", NULL, MAVLINK_TYPE_INT16_T, 0, 6, offsetof(mavlink_manual_control_t, r) }, \
          { "buttons", NULL, MAVLINK_TYPE_UINT16_T, 0, 8, offsetof(mavlink_manual_control_t, buttons) }, \
+         { "chan5", NULL, MAVLINK_TYPE_INT16_T, 0, 11, offsetof(mavlink_manual_control_t, chan5) }, \
+         { "chan6", NULL, MAVLINK_TYPE_INT16_T, 0, 13, offsetof(mavlink_manual_control_t, chan6) }, \
+         { "chan7", NULL, MAVLINK_TYPE_INT16_T, 0, 15, offsetof(mavlink_manual_control_t, chan7) }, \
+         { "chan8", NULL, MAVLINK_TYPE_INT16_T, 0, 17, offsetof(mavlink_manual_control_t, chan8) }, \
          } \
 }
 #else
 #define MAVLINK_MESSAGE_INFO_MANUAL_CONTROL { \
     "MANUAL_CONTROL", \
-    6, \
+    10, \
     {  { "target", NULL, MAVLINK_TYPE_UINT8_T, 0, 10, offsetof(mavlink_manual_control_t, target) }, \
          { "x", NULL, MAVLINK_TYPE_INT16_T, 0, 0, offsetof(mavlink_manual_control_t, x) }, \
          { "y", NULL, MAVLINK_TYPE_INT16_T, 0, 2, offsetof(mavlink_manual_control_t, y) }, \
          { "z", NULL, MAVLINK_TYPE_INT16_T, 0, 4, offsetof(mavlink_manual_control_t, z) }, \
          { "r", NULL, MAVLINK_TYPE_INT16_T, 0, 6, offsetof(mavlink_manual_control_t, r) }, \
          { "buttons", NULL, MAVLINK_TYPE_UINT16_T, 0, 8, offsetof(mavlink_manual_control_t, buttons) }, \
+         { "chan5", NULL, MAVLINK_TYPE_INT16_T, 0, 11, offsetof(mavlink_manual_control_t, chan5) }, \
+         { "chan6", NULL, MAVLINK_TYPE_INT16_T, 0, 13, offsetof(mavlink_manual_control_t, chan6) }, \
+         { "chan7", NULL, MAVLINK_TYPE_INT16_T, 0, 15, offsetof(mavlink_manual_control_t, chan7) }, \
+         { "chan8", NULL, MAVLINK_TYPE_INT16_T, 0, 17, offsetof(mavlink_manual_control_t, chan8) }, \
          } \
 }
 #endif
@@ -62,10 +74,14 @@ typedef struct __mavlink_manual_control_t {
  * @param z  Z-axis, normalized to the range [-1000,1000]. A value of INT16_MAX indicates that this axis is invalid. Generally corresponds to a separate slider movement with maximum being 1000 and minimum being -1000 on a joystick and the thrust of a vehicle. Positive values are positive thrust, negative values are negative thrust.
  * @param r  R-axis, normalized to the range [-1000,1000]. A value of INT16_MAX indicates that this axis is invalid. Generally corresponds to a twisting of the joystick, with counter-clockwise being 1000 and clockwise being -1000, and the yaw of a vehicle.
  * @param buttons  A bitfield corresponding to the joystick buttons' current state, 1 for pressed, 0 for released. The lowest bit corresponds to Button 1.
+ * @param chan5  axis, normalized to the range [-1000,1000]. A value of INT16_MAX indicates that this axis is invalid. Corresponds to movement on joystick channel 5
+ * @param chan6  axis, normalized to the range [-1000,1000]. A value of INT16_MAX indicates that this axis is invalid. Corresponds to movement on joystick channel 6
+ * @param chan7  axis, normalized to the range [-1000,1000]. A value of INT16_MAX indicates that this axis is invalid. Corresponds to movement on joystick channel 7
+ * @param chan8  axis, normalized to the range [-1000,1000]. A value of INT16_MAX indicates that this axis is invalid. Corresponds to movement on joystick channel 8
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_manual_control_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
-                               uint8_t target, int16_t x, int16_t y, int16_t z, int16_t r, uint16_t buttons)
+                               uint8_t target, int16_t x, int16_t y, int16_t z, int16_t r, uint16_t buttons, int16_t chan5, int16_t chan6, int16_t chan7, int16_t chan8)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_MANUAL_CONTROL_LEN];
@@ -75,6 +91,10 @@ static inline uint16_t mavlink_msg_manual_control_pack(uint8_t system_id, uint8_
     _mav_put_int16_t(buf, 6, r);
     _mav_put_uint16_t(buf, 8, buttons);
     _mav_put_uint8_t(buf, 10, target);
+    _mav_put_int16_t(buf, 11, chan5);
+    _mav_put_int16_t(buf, 13, chan6);
+    _mav_put_int16_t(buf, 15, chan7);
+    _mav_put_int16_t(buf, 17, chan8);
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_MANUAL_CONTROL_LEN);
 #else
@@ -85,6 +105,10 @@ static inline uint16_t mavlink_msg_manual_control_pack(uint8_t system_id, uint8_
     packet.r = r;
     packet.buttons = buttons;
     packet.target = target;
+    packet.chan5 = chan5;
+    packet.chan6 = chan6;
+    packet.chan7 = chan7;
+    packet.chan8 = chan8;
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_MANUAL_CONTROL_LEN);
 #endif
@@ -105,11 +129,15 @@ static inline uint16_t mavlink_msg_manual_control_pack(uint8_t system_id, uint8_
  * @param z  Z-axis, normalized to the range [-1000,1000]. A value of INT16_MAX indicates that this axis is invalid. Generally corresponds to a separate slider movement with maximum being 1000 and minimum being -1000 on a joystick and the thrust of a vehicle. Positive values are positive thrust, negative values are negative thrust.
  * @param r  R-axis, normalized to the range [-1000,1000]. A value of INT16_MAX indicates that this axis is invalid. Generally corresponds to a twisting of the joystick, with counter-clockwise being 1000 and clockwise being -1000, and the yaw of a vehicle.
  * @param buttons  A bitfield corresponding to the joystick buttons' current state, 1 for pressed, 0 for released. The lowest bit corresponds to Button 1.
+ * @param chan5  axis, normalized to the range [-1000,1000]. A value of INT16_MAX indicates that this axis is invalid. Corresponds to movement on joystick channel 5
+ * @param chan6  axis, normalized to the range [-1000,1000]. A value of INT16_MAX indicates that this axis is invalid. Corresponds to movement on joystick channel 6
+ * @param chan7  axis, normalized to the range [-1000,1000]. A value of INT16_MAX indicates that this axis is invalid. Corresponds to movement on joystick channel 7
+ * @param chan8  axis, normalized to the range [-1000,1000]. A value of INT16_MAX indicates that this axis is invalid. Corresponds to movement on joystick channel 8
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_manual_control_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
                                mavlink_message_t* msg,
-                                   uint8_t target,int16_t x,int16_t y,int16_t z,int16_t r,uint16_t buttons)
+                                   uint8_t target,int16_t x,int16_t y,int16_t z,int16_t r,uint16_t buttons,int16_t chan5,int16_t chan6,int16_t chan7,int16_t chan8)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_MANUAL_CONTROL_LEN];
@@ -119,6 +147,10 @@ static inline uint16_t mavlink_msg_manual_control_pack_chan(uint8_t system_id, u
     _mav_put_int16_t(buf, 6, r);
     _mav_put_uint16_t(buf, 8, buttons);
     _mav_put_uint8_t(buf, 10, target);
+    _mav_put_int16_t(buf, 11, chan5);
+    _mav_put_int16_t(buf, 13, chan6);
+    _mav_put_int16_t(buf, 15, chan7);
+    _mav_put_int16_t(buf, 17, chan8);
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_MANUAL_CONTROL_LEN);
 #else
@@ -129,6 +161,10 @@ static inline uint16_t mavlink_msg_manual_control_pack_chan(uint8_t system_id, u
     packet.r = r;
     packet.buttons = buttons;
     packet.target = target;
+    packet.chan5 = chan5;
+    packet.chan6 = chan6;
+    packet.chan7 = chan7;
+    packet.chan8 = chan8;
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_MANUAL_CONTROL_LEN);
 #endif
@@ -147,7 +183,7 @@ static inline uint16_t mavlink_msg_manual_control_pack_chan(uint8_t system_id, u
  */
 static inline uint16_t mavlink_msg_manual_control_encode(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg, const mavlink_manual_control_t* manual_control)
 {
-    return mavlink_msg_manual_control_pack(system_id, component_id, msg, manual_control->target, manual_control->x, manual_control->y, manual_control->z, manual_control->r, manual_control->buttons);
+    return mavlink_msg_manual_control_pack(system_id, component_id, msg, manual_control->target, manual_control->x, manual_control->y, manual_control->z, manual_control->r, manual_control->buttons, manual_control->chan5, manual_control->chan6, manual_control->chan7, manual_control->chan8);
 }
 
 /**
@@ -161,7 +197,7 @@ static inline uint16_t mavlink_msg_manual_control_encode(uint8_t system_id, uint
  */
 static inline uint16_t mavlink_msg_manual_control_encode_chan(uint8_t system_id, uint8_t component_id, uint8_t chan, mavlink_message_t* msg, const mavlink_manual_control_t* manual_control)
 {
-    return mavlink_msg_manual_control_pack_chan(system_id, component_id, chan, msg, manual_control->target, manual_control->x, manual_control->y, manual_control->z, manual_control->r, manual_control->buttons);
+    return mavlink_msg_manual_control_pack_chan(system_id, component_id, chan, msg, manual_control->target, manual_control->x, manual_control->y, manual_control->z, manual_control->r, manual_control->buttons, manual_control->chan5, manual_control->chan6, manual_control->chan7, manual_control->chan8);
 }
 
 /**
@@ -174,10 +210,14 @@ static inline uint16_t mavlink_msg_manual_control_encode_chan(uint8_t system_id,
  * @param z  Z-axis, normalized to the range [-1000,1000]. A value of INT16_MAX indicates that this axis is invalid. Generally corresponds to a separate slider movement with maximum being 1000 and minimum being -1000 on a joystick and the thrust of a vehicle. Positive values are positive thrust, negative values are negative thrust.
  * @param r  R-axis, normalized to the range [-1000,1000]. A value of INT16_MAX indicates that this axis is invalid. Generally corresponds to a twisting of the joystick, with counter-clockwise being 1000 and clockwise being -1000, and the yaw of a vehicle.
  * @param buttons  A bitfield corresponding to the joystick buttons' current state, 1 for pressed, 0 for released. The lowest bit corresponds to Button 1.
+ * @param chan5  axis, normalized to the range [-1000,1000]. A value of INT16_MAX indicates that this axis is invalid. Corresponds to movement on joystick channel 5
+ * @param chan6  axis, normalized to the range [-1000,1000]. A value of INT16_MAX indicates that this axis is invalid. Corresponds to movement on joystick channel 6
+ * @param chan7  axis, normalized to the range [-1000,1000]. A value of INT16_MAX indicates that this axis is invalid. Corresponds to movement on joystick channel 7
+ * @param chan8  axis, normalized to the range [-1000,1000]. A value of INT16_MAX indicates that this axis is invalid. Corresponds to movement on joystick channel 8
  */
 #ifdef MAVLINK_USE_CONVENIENCE_FUNCTIONS
 
-static inline void mavlink_msg_manual_control_send(mavlink_channel_t chan, uint8_t target, int16_t x, int16_t y, int16_t z, int16_t r, uint16_t buttons)
+static inline void mavlink_msg_manual_control_send(mavlink_channel_t chan, uint8_t target, int16_t x, int16_t y, int16_t z, int16_t r, uint16_t buttons, int16_t chan5, int16_t chan6, int16_t chan7, int16_t chan8)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_MANUAL_CONTROL_LEN];
@@ -187,6 +227,10 @@ static inline void mavlink_msg_manual_control_send(mavlink_channel_t chan, uint8
     _mav_put_int16_t(buf, 6, r);
     _mav_put_uint16_t(buf, 8, buttons);
     _mav_put_uint8_t(buf, 10, target);
+    _mav_put_int16_t(buf, 11, chan5);
+    _mav_put_int16_t(buf, 13, chan6);
+    _mav_put_int16_t(buf, 15, chan7);
+    _mav_put_int16_t(buf, 17, chan8);
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_MANUAL_CONTROL, buf, MAVLINK_MSG_ID_MANUAL_CONTROL_MIN_LEN, MAVLINK_MSG_ID_MANUAL_CONTROL_LEN, MAVLINK_MSG_ID_MANUAL_CONTROL_CRC);
 #else
@@ -197,6 +241,10 @@ static inline void mavlink_msg_manual_control_send(mavlink_channel_t chan, uint8
     packet.r = r;
     packet.buttons = buttons;
     packet.target = target;
+    packet.chan5 = chan5;
+    packet.chan6 = chan6;
+    packet.chan7 = chan7;
+    packet.chan8 = chan8;
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_MANUAL_CONTROL, (const char *)&packet, MAVLINK_MSG_ID_MANUAL_CONTROL_MIN_LEN, MAVLINK_MSG_ID_MANUAL_CONTROL_LEN, MAVLINK_MSG_ID_MANUAL_CONTROL_CRC);
 #endif
@@ -210,7 +258,7 @@ static inline void mavlink_msg_manual_control_send(mavlink_channel_t chan, uint8
 static inline void mavlink_msg_manual_control_send_struct(mavlink_channel_t chan, const mavlink_manual_control_t* manual_control)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-    mavlink_msg_manual_control_send(chan, manual_control->target, manual_control->x, manual_control->y, manual_control->z, manual_control->r, manual_control->buttons);
+    mavlink_msg_manual_control_send(chan, manual_control->target, manual_control->x, manual_control->y, manual_control->z, manual_control->r, manual_control->buttons, manual_control->chan5, manual_control->chan6, manual_control->chan7, manual_control->chan8);
 #else
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_MANUAL_CONTROL, (const char *)manual_control, MAVLINK_MSG_ID_MANUAL_CONTROL_MIN_LEN, MAVLINK_MSG_ID_MANUAL_CONTROL_LEN, MAVLINK_MSG_ID_MANUAL_CONTROL_CRC);
 #endif
@@ -224,7 +272,7 @@ static inline void mavlink_msg_manual_control_send_struct(mavlink_channel_t chan
   is usually the receive buffer for the channel, and allows a reply to an
   incoming message with minimum stack space usage.
  */
-static inline void mavlink_msg_manual_control_send_buf(mavlink_message_t *msgbuf, mavlink_channel_t chan,  uint8_t target, int16_t x, int16_t y, int16_t z, int16_t r, uint16_t buttons)
+static inline void mavlink_msg_manual_control_send_buf(mavlink_message_t *msgbuf, mavlink_channel_t chan,  uint8_t target, int16_t x, int16_t y, int16_t z, int16_t r, uint16_t buttons, int16_t chan5, int16_t chan6, int16_t chan7, int16_t chan8)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char *buf = (char *)msgbuf;
@@ -234,6 +282,10 @@ static inline void mavlink_msg_manual_control_send_buf(mavlink_message_t *msgbuf
     _mav_put_int16_t(buf, 6, r);
     _mav_put_uint16_t(buf, 8, buttons);
     _mav_put_uint8_t(buf, 10, target);
+    _mav_put_int16_t(buf, 11, chan5);
+    _mav_put_int16_t(buf, 13, chan6);
+    _mav_put_int16_t(buf, 15, chan7);
+    _mav_put_int16_t(buf, 17, chan8);
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_MANUAL_CONTROL, buf, MAVLINK_MSG_ID_MANUAL_CONTROL_MIN_LEN, MAVLINK_MSG_ID_MANUAL_CONTROL_LEN, MAVLINK_MSG_ID_MANUAL_CONTROL_CRC);
 #else
@@ -244,6 +296,10 @@ static inline void mavlink_msg_manual_control_send_buf(mavlink_message_t *msgbuf
     packet->r = r;
     packet->buttons = buttons;
     packet->target = target;
+    packet->chan5 = chan5;
+    packet->chan6 = chan6;
+    packet->chan7 = chan7;
+    packet->chan8 = chan8;
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_MANUAL_CONTROL, (const char *)packet, MAVLINK_MSG_ID_MANUAL_CONTROL_MIN_LEN, MAVLINK_MSG_ID_MANUAL_CONTROL_LEN, MAVLINK_MSG_ID_MANUAL_CONTROL_CRC);
 #endif
@@ -316,6 +372,46 @@ static inline uint16_t mavlink_msg_manual_control_get_buttons(const mavlink_mess
 }
 
 /**
+ * @brief Get field chan5 from manual_control message
+ *
+ * @return  axis, normalized to the range [-1000,1000]. A value of INT16_MAX indicates that this axis is invalid. Corresponds to movement on joystick channel 5
+ */
+static inline int16_t mavlink_msg_manual_control_get_chan5(const mavlink_message_t* msg)
+{
+    return _MAV_RETURN_int16_t(msg,  11);
+}
+
+/**
+ * @brief Get field chan6 from manual_control message
+ *
+ * @return  axis, normalized to the range [-1000,1000]. A value of INT16_MAX indicates that this axis is invalid. Corresponds to movement on joystick channel 6
+ */
+static inline int16_t mavlink_msg_manual_control_get_chan6(const mavlink_message_t* msg)
+{
+    return _MAV_RETURN_int16_t(msg,  13);
+}
+
+/**
+ * @brief Get field chan7 from manual_control message
+ *
+ * @return  axis, normalized to the range [-1000,1000]. A value of INT16_MAX indicates that this axis is invalid. Corresponds to movement on joystick channel 7
+ */
+static inline int16_t mavlink_msg_manual_control_get_chan7(const mavlink_message_t* msg)
+{
+    return _MAV_RETURN_int16_t(msg,  15);
+}
+
+/**
+ * @brief Get field chan8 from manual_control message
+ *
+ * @return  axis, normalized to the range [-1000,1000]. A value of INT16_MAX indicates that this axis is invalid. Corresponds to movement on joystick channel 8
+ */
+static inline int16_t mavlink_msg_manual_control_get_chan8(const mavlink_message_t* msg)
+{
+    return _MAV_RETURN_int16_t(msg,  17);
+}
+
+/**
  * @brief Decode a manual_control message into a struct
  *
  * @param msg The message to decode
@@ -330,6 +426,10 @@ static inline void mavlink_msg_manual_control_decode(const mavlink_message_t* ms
     manual_control->r = mavlink_msg_manual_control_get_r(msg);
     manual_control->buttons = mavlink_msg_manual_control_get_buttons(msg);
     manual_control->target = mavlink_msg_manual_control_get_target(msg);
+    manual_control->chan5 = mavlink_msg_manual_control_get_chan5(msg);
+    manual_control->chan6 = mavlink_msg_manual_control_get_chan6(msg);
+    manual_control->chan7 = mavlink_msg_manual_control_get_chan7(msg);
+    manual_control->chan8 = mavlink_msg_manual_control_get_chan8(msg);
 #else
         uint8_t len = msg->len < MAVLINK_MSG_ID_MANUAL_CONTROL_LEN? msg->len : MAVLINK_MSG_ID_MANUAL_CONTROL_LEN;
         memset(manual_control, 0, MAVLINK_MSG_ID_MANUAL_CONTROL_LEN);
